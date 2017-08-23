@@ -264,31 +264,34 @@ public class GwtExampleCalc implements EntryPoint {
 		}
 	}
 
-	private double multiplication(double firstNum, double secondNum) {
-		return firstNum * secondNum;
+	private double multiplication(double firstNum, double nextNum) {
+		return firstNum * nextNum;
 	}
 
-	private double division(double firstNum, double secondNum) {
-		return firstNum / secondNum;
+	private double division(double firstNum, double nextNum) {
+		return firstNum / nextNum;
 	}
 
-	private double modulo(double firstNum, double secondNum) {
-		return firstNum % secondNum;
+	private double modulo(double firstNum, double nextNum) {
+		return firstNum % nextNum;
 	}
 
-	private double addition(double firstNum, double secondNum) {
-		return firstNum + secondNum;
+	private double addition(double firstNum, double nextNum) {
+		return firstNum + nextNum;
 	}
 
-	private double subtraction(double firstNum, double secondNum) {
-		return firstNum - secondNum;
+	private double subtraction(double firstNum, double nextNum) {
+		return firstNum - nextNum;
 	}
 
-	private double powerOf(double firstNum, double secondNum) {
-		if (secondNum == 0 || secondNum < 0) {
+	private double powerOf(double firstNum, double nextNum) {
+		if (nextNum == 0) {
 			return 1;
-		} else {
-			return firstNum * powerOf(firstNum, secondNum - 1);
+		} else if (nextNum < 0){
+			return (1/firstNum) * powerOf(firstNum, nextNum + 1);
+		}
+		else {
+			return firstNum * powerOf(firstNum, nextNum - 1);
 		}
 	}
 
