@@ -1,5 +1,8 @@
 /** Add css rules here for your application. */
 
+button.gwt-Button{
+	width: 42px;
+}
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
@@ -27,6 +30,7 @@ h1 {
 .serverResponseLabelError {
   color: red;
 }
+
 
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {

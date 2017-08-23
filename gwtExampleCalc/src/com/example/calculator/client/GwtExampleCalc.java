@@ -5,38 +5,34 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.impl.WindowImplIE.Resources;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 
 public class GwtExampleCalc implements EntryPoint {
+	private final String SET_WIDTH = "130px";
 	private VerticalPanel mainPanel = new VerticalPanel();
-	private HorizontalPanel addPanel = new HorizontalPanel();
 	private Label header = new Label();
+	private Label historyHeader = new Label();
 	private TextBox result = new TextBox();
 	private FlexTable numbers = new FlexTable();
-	private FlexTable clear = new FlexTable();
+	private FlexTable symbols = new FlexTable();
 	private FlexTable history = new FlexTable();
-	private TextBox operand1TextBox = new TextBox();
-	private TextBox operand2TextBox = new TextBox();
-	private Button calculateButton = new Button("Calculate");
-	private MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
-	private SuggestBox operatorTextBox = new SuggestBox(oracle);
-	private String[] operators = new String[] { "+", "-", "*", "/", "%", "e<sup>x</sup>", "=" };
+	private String[] operators = new String[] { "+", "-", "*", "/", "%", "^", "=" };
 	private String[] clearSymb = new String[] { "c", "ce" };
-	private String[] bottomRow = new String[] { ",", "0", "+-" };
+	private String[] bottomRow = new String[] { ".", "0", "+-" };
 	private ArrayList<String> eqParts = new ArrayList<String>();
 
 	/**
@@ -47,7 +43,7 @@ public class GwtExampleCalc implements EntryPoint {
 		int row = 0;
 		int column = 0;
 
-		for (int i = 0; i < 16; i++) {
+		for (int i = 1; i < 13; i++) {
 			Button btn = null;
 			if (row == 0) {
 				final String value = String.valueOf(i);
@@ -78,7 +74,7 @@ public class GwtExampleCalc implements EntryPoint {
 					});
 				}
 			} else {
-				int adjusted = i - row;
+				int adjusted = i;
 				final String value = String.valueOf(adjusted);
 				btn = new Button(value);
 				btn.addClickHandler(new ClickHandler() {
@@ -96,136 +92,130 @@ public class GwtExampleCalc implements EntryPoint {
 			numbers.setWidget(row, column, btn);
 			column++;
 
-			if ((i % 4) == 0) {
+			if ((i % 3) == 0) {
 				row++;
 				column = 0;
 			}
 		}
 
 		// Manually add the symbols (operators) and clear sets
-		clear.setWidget(0, 0, new Button(clearSymb[0], new ClickHandler() {
+		// clear
+		symbols.setWidget(2, 0, new Button(clearSymb[0], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(clearSymb[0]);
 			}
 		}));
-
-		clear.setWidget(0, 0, new Button(clearSymb[1], new ClickHandler() {
+		// clear all
+		symbols.setWidget(2, 1, new Button(clearSymb[1], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(clearSymb[1]);
 			}
 		}));
+		// calculate
+				symbols.setWidget(2, 2, new Button(operators[6], new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						// TODO Auto-generated method stub
+						addToDisplay(operators[6]);
+					}
+				}));
+				// calculate with enter key
+				result.addKeyDownHandler(new KeyDownHandler() {
 
-		clear.setWidget(0, 3, new Button(operators[0], new ClickHandler() {
+					@Override
+					public void onKeyDown(KeyDownEvent event) {
+						// TODO Auto-generated method stub
+						if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+							addToDisplay(operators[6]);
+					}
+					
+				});
+		// addition
+		symbols.setWidget(0, 0, new Button(operators[0], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[0]);
 			}
 		}));
-
-		clear.setWidget(0, 3, new Button(operators[1], new ClickHandler() {
+		//subraction
+		symbols.setWidget(0, 1, new Button(operators[1], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[1]);
 			}
 		}));
-
-		clear.setWidget(1, 3, new Button(operators[2], new ClickHandler() {
+		// multiplication
+		symbols.setWidget(0, 2, new Button(operators[2], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[2]);
 			}
 		}));
-
-		clear.setWidget(2, 3, new Button(operators[3], new ClickHandler() {
+		//division
+		symbols.setWidget(1, 0, new Button(operators[3], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[3]);
 			}
 		}));
-
-		clear.setWidget(3, 3, new Button(operators[4], new ClickHandler() {
+		// modulo
+		symbols.setWidget(1, 1, new Button(operators[4], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[4]);
 			}
 		}));
-
-		clear.setWidget(3, 3, new Button(operators[5], new ClickHandler() {
+		// power of base
+		symbols.setWidget(1, 2, new Button(operators[5], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				addToDisplay(operators[5]);
 			}
 		}));
-
-		clear.setWidget(3, 3, new Button(operators[6], new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				addToDisplay(operators[6]);
-			}
-		}));
-
-		numbers.setWidth("130px");
-		result.setWidth("130px");
+		
+		numbers.setWidth(SET_WIDTH);
+		result.setWidth(SET_WIDTH);
 		header.setText("Calculator");
-		header.setWidth("130px");
-
-		// Suggests the valid operators
-		oracle.add("*");
-		oracle.add("%");
-		oracle.add("+");
-		oracle.add("-");
-		oracle.add("^");
-		oracle.add("/");
+		header.setWidth(SET_WIDTH);
+		historyHeader.setText("History");
+		history.setText(0, 0, "Query");
+		history.setText(0, 1, "Answer");
 
 		mainPanel.add(header);
 		mainPanel.add(result);
-		mainPanel.add(clear);
+		mainPanel.add(symbols);
 		mainPanel.add(numbers);
+		mainPanel.add(historyHeader);
+		mainPanel.add(history);
 
 		mainPanel.addStyleName("gwt-VerticalPanel");
 		mainPanel.addStyleName("calc");
+		result.setReadOnly(true);
 
 		RootPanel.get("calc").add(mainPanel);
-		// addPanel.add(operand1TextBox);
-		// addPanel.add(operatorTextBox);
-		// addPanel.add(operand2TextBox);
-		// addPanel.add(calculateButton);
-
-		// TODO Assemble Main panel.
-
-		// mainPanel.add(addPanel); // TODO Associate the Main panel with the HTML host
-		// page.
-		// RootPanel.get("calc").add(mainPanel); // TODO Move cursor focus to the input
-		// box.
-
-		calculateButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				calculate();
-			}
-		});
 
 	}
-
+	
 	private void addToDisplay(String addText) {
 		String origText = new String();
 		origText = result.getText();
+		result.setFocus(true);
 
 		if (ArrayContains(operators, addText)) {
 			if (addText == "=") {
 				// figure it out and clear the past
 				eqParts.add(origText);
-				FigureItOut();
+				calculate();
 
 				eqParts.clear();
 				return;
@@ -246,13 +236,6 @@ public class GwtExampleCalc implements EntryPoint {
 			else
 				result.setText("-" + origText);
 		} else {
-			if (addText == "%") {
-				Double percent = null;
-				percent = Double.parseDouble(origText) / 100;
-
-				result.setText(percent.toString());
-				return;
-			}
 			if (addText == "c") {
 				result.setText("");
 				return;
@@ -273,27 +256,27 @@ public class GwtExampleCalc implements EntryPoint {
 		}
 	}
 
-	private long multiplication(long firstNum, long secondNum) {
+	private double multiplication(double firstNum, double secondNum) {
 		return firstNum * secondNum;
 	}
 
-	private long division(long firstNum, long secondNum) {
+	private double division(double firstNum, double secondNum) {
 		return firstNum / secondNum;
 	}
 
-	private long modulo(long firstNum, long secondNum) {
+	private double modulo(double firstNum, double secondNum) {
 		return firstNum % secondNum;
 	}
 
-	private long addition(long firstNum, long secondNum) {
+	private double addition(double firstNum, double secondNum) {
 		return firstNum + secondNum;
 	}
 
-	private long subtraction(long firstNum, long secondNum) {
+	private double subtraction(double firstNum, double secondNum) {
 		return firstNum - secondNum;
 	}
 
-	private long powerOf(long firstNum, long secondNum) {
+	private double powerOf(double firstNum, double secondNum) {
 		if (secondNum == 0 || secondNum < 0) {
 			return 1;
 		} else {
@@ -302,69 +285,6 @@ public class GwtExampleCalc implements EntryPoint {
 	}
 
 	private void calculate() {
-
-		final String operator = operatorTextBox.getText().trim();
-		calculateButton.setFocus(true);
-		if ((!operator.equals("*") && !operator.equals("+") && !operator.equals("%") && !operator.equals("-")
-				&& !operator.equals("/") && !operator.equals("^")) || !isNumber(operand1TextBox.getText().trim())
-				|| !isNumber(operand2TextBox.getText().trim())) {
-			Window.alert("You have entered a non valid binary operator or one of the operands is not an integer");
-
-			return;
-		}
-
-		long first = Long.parseLong(operand1TextBox.getText());
-		long second = Long.parseLong(operand2TextBox.getText());
-		long answer;
-		// Multiplication
-		if (operator.equals("*")) {
-			answer = multiplication(first, second);
-			Window.alert("The answer is: " + answer);
-
-		}
-		// Modulo
-		else if (operator.equals("%")) {
-			answer = modulo(first, second);
-			Window.alert("The answer is: " + answer);
-
-		}
-		// addition
-		else if (operator.equals("%")) {
-			answer = addition(first, second);
-			Window.alert("The answer is: " + answer);
-
-		}
-		// division
-		else if (operator.equals("/")) {
-			answer = division(first, second);
-			Window.alert("The answer is: " + answer);
-
-		}
-		// substraction
-		else if (operator.equals("-")) {
-			answer = subtraction(first, second);
-			Window.alert("The answer is: " + answer);
-
-		}
-		// to the power of
-		else {
-			answer = powerOf(first, second);
-			Window.alert("The answer is: " + answer);
-		}
-
-	}
-
-	// Checkes if a String could be seen as an integer
-	public boolean isNumber(String input) {
-		try {
-			Long.parseLong(input);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-
-	private void FigureItOut() {
 		// set displayArea text to the answer
 		Double answer = null;
 		Double firstNum = null;
@@ -379,7 +299,7 @@ public class GwtExampleCalc implements EntryPoint {
 			// add a number
 			if (firstNum == null) {
 				firstNum = Double.parseDouble(currVal);
-				// Window.alert(firstNum.toString());
+				Window.alert(firstNum.toString());
 				continue;
 			} else if (isOperator == true && i == 0) {
 				Window.alert("Try again!");
@@ -393,28 +313,31 @@ public class GwtExampleCalc implements EntryPoint {
 					return;
 				}
 				operator = currVal;
-				// Window.alert(operator);
+				Window.alert(operator);
 				continue;
 			} else if (nextNum == null) {
 				nextNum = Double.parseDouble(currVal);
-				// Window.alert(nextNum.toString());
+				Window.alert(nextNum.toString());
 
 				if (operator == "+") {
-					answer = firstNum + nextNum;
+					answer = addition(firstNum, nextNum);
 				} else if (operator == "-") {
-					answer = firstNum - nextNum;
-				} else if (operator == "x") {
-					answer = firstNum * nextNum;
+					answer = subtraction(firstNum, nextNum);
+				} else if (operator == "*") {
+					answer = multiplication(firstNum, nextNum);
 				} else if (operator == "/") {
-					answer = firstNum / nextNum;
-				} else if (operator == "=") {
-				} // do nothing?
-				else {
-				} // do someting?
+					answer = division(firstNum, nextNum);
+				} else if (operator == "^") {
+					answer = powerOf(firstNum, nextNum);
+				}
+				else if (operator == "%"){
+					answer = modulo(firstNum, nextNum);
+				}
 
 				result.setText(answer.toString());
+				setHistory(firstNum, operator, nextNum, answer.toString());
 
-				// Window.alert("The answer is " + answer);
+				Window.alert("The answer is " + answer);
 				firstNum = answer;
 				nextNum = null;
 				operator = null;
@@ -422,6 +345,13 @@ public class GwtExampleCalc implements EntryPoint {
 				Window.alert("Something unexpected happened. Try again.");
 			}
 		}
+	}
+	
+	private void setHistory(double first, String operator, double second, String answer) {
+		int row = history.getRowCount();
+		history.setText(row, 0, first + operator + second);
+		history.setText(row, 1, answer);
+		
 	}
 
 	private boolean ArrayContains(String[] array, String check) {
