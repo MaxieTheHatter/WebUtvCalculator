@@ -287,10 +287,9 @@ public class GwtExampleCalc implements EntryPoint {
 	private double powerOf(double firstNum, double nextNum) {
 		if (nextNum == 0) {
 			return 1;
-		} else if (nextNum < 0){
-			return (1/firstNum) * powerOf(firstNum, nextNum + 1);
-		}
-		else {
+		} else if (nextNum < 0) {
+			return (1 / firstNum) * powerOf(firstNum, nextNum + 1);
+		} else {
 			return firstNum * powerOf(firstNum, nextNum - 1);
 		}
 	}
@@ -310,7 +309,7 @@ public class GwtExampleCalc implements EntryPoint {
 			// add a number
 			if (firstNum == null) {
 				firstNum = Double.parseDouble(currVal);
-				//Window.alert(firstNum.toString());
+				// Window.alert(firstNum.toString());
 				continue;
 			} else if (isOperator == true && i == 0) {
 				Window.alert("Try again!");
@@ -324,11 +323,11 @@ public class GwtExampleCalc implements EntryPoint {
 					return;
 				}
 				operator = currVal;
-				//Window.alert(operator);
+				// Window.alert(operator);
 				continue;
 			} else if (nextNum == null) {
 				nextNum = Double.parseDouble(currVal);
-				//Window.alert(nextNum.toString());
+				// Window.alert(nextNum.toString());
 
 				if (operator == "+") {
 					answer = addition(firstNum, nextNum);
@@ -347,7 +346,7 @@ public class GwtExampleCalc implements EntryPoint {
 				result.setText(answer.toString());
 				setHistory(firstNum, operator, nextNum, answer.toString());
 
-				//Window.alert("The answer is " + answer);
+				// Window.alert("The answer is " + answer);
 				firstNum = answer;
 				nextNum = null;
 				operator = null;
