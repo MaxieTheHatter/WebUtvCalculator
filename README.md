@@ -15,6 +15,8 @@ For this example it would be
 
 6+6 = 12
 
+Every step is printed out in the history, but the result screen only shows the final product
+
 ## TODO
 - Allow input using numpad
 - Add heavy metal music for the genuine calculator experience
