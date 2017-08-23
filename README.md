@@ -10,7 +10,9 @@ Simply push in your numbers using your mouse and hit = (or enter on your keyboar
 If you enter multiple calculations (i.e 1+5+6) it will calculate them in order and show the end result.
 
 For this example it would be 
+
 1+5 = 6
+
 6+6 = 12
 
 ## TODO
