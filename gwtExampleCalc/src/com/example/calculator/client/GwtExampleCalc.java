@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.impl.WindowImplIE.Resources;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -22,8 +21,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 
 public class GwtExampleCalc implements EntryPoint {
-	private final String SET_WIDTH = "130px";
+	private final String SET_WIDTH = "140px";
 	private VerticalPanel mainPanel = new VerticalPanel();
+	private VerticalPanel historyPanel = new VerticalPanel();
 	private Label header = new Label();
 	private Label historyHeader = new Label();
 	private TextBox result = new TextBox();
@@ -116,24 +116,24 @@ public class GwtExampleCalc implements EntryPoint {
 			}
 		}));
 		// calculate
-				symbols.setWidget(2, 2, new Button(operators[6], new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						// TODO Auto-generated method stub
-						addToDisplay(operators[6]);
-					}
-				}));
-				// calculate with enter key
-				result.addKeyDownHandler(new KeyDownHandler() {
+		symbols.setWidget(3, 0, new Button(operators[6], new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				addToDisplay(operators[6]);
+			}
+		}));
+		// calculate with enter key
+		result.addKeyDownHandler(new KeyDownHandler() {
 
-					@Override
-					public void onKeyDown(KeyDownEvent event) {
-						// TODO Auto-generated method stub
-						if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-							addToDisplay(operators[6]);
-					}
-					
-				});
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				// TODO Auto-generated method stub
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+					addToDisplay(operators[6]);
+			}
+
+		});
 		// addition
 		symbols.setWidget(0, 0, new Button(operators[0], new ClickHandler() {
 			@Override
@@ -142,7 +142,7 @@ public class GwtExampleCalc implements EntryPoint {
 				addToDisplay(operators[0]);
 			}
 		}));
-		//subraction
+		// subtraction
 		symbols.setWidget(0, 1, new Button(operators[1], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -158,7 +158,7 @@ public class GwtExampleCalc implements EntryPoint {
 				addToDisplay(operators[2]);
 			}
 		}));
-		//division
+		// division
 		symbols.setWidget(1, 0, new Button(operators[3], new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -182,30 +182,38 @@ public class GwtExampleCalc implements EntryPoint {
 				addToDisplay(operators[5]);
 			}
 		}));
-		
+
 		numbers.setWidth(SET_WIDTH);
 		result.setWidth(SET_WIDTH);
-		header.setText("Calculator");
 		header.setWidth(SET_WIDTH);
+		mainPanel.setWidth(SET_WIDTH);
+		historyHeader.setWidth(SET_WIDTH);
+		history.setWidth(SET_WIDTH);
+		historyPanel.setWidth(SET_WIDTH);
+		header.setText("Calculator T84");
 		historyHeader.setText("History");
 		history.setText(0, 0, "Query");
 		history.setText(0, 1, "Answer");
 
 		mainPanel.add(header);
 		mainPanel.add(result);
-		mainPanel.add(symbols);
 		mainPanel.add(numbers);
-		mainPanel.add(historyHeader);
-		mainPanel.add(history);
+		mainPanel.add(symbols);
+		historyPanel.add(historyHeader);
+		historyPanel.add(history);
 
 		mainPanel.addStyleName("gwt-VerticalPanel");
 		mainPanel.addStyleName("calc");
+		historyPanel.addStyleName("gwt-VerticalPanel");
+		historyPanel.addStyleName("calc");
+		symbols.getElement().getStyle().setProperty("marginTop", "10px");
+		historyPanel.getElement().getStyle().setProperty("marginTop", "20px");
 		result.setReadOnly(true);
 
 		RootPanel.get("calc").add(mainPanel);
-
+		RootPanel.get("calc").add(historyPanel);
 	}
-	
+
 	private void addToDisplay(String addText) {
 		String origText = new String();
 		origText = result.getText();
@@ -299,7 +307,7 @@ public class GwtExampleCalc implements EntryPoint {
 			// add a number
 			if (firstNum == null) {
 				firstNum = Double.parseDouble(currVal);
-				Window.alert(firstNum.toString());
+				//Window.alert(firstNum.toString());
 				continue;
 			} else if (isOperator == true && i == 0) {
 				Window.alert("Try again!");
@@ -313,11 +321,11 @@ public class GwtExampleCalc implements EntryPoint {
 					return;
 				}
 				operator = currVal;
-				Window.alert(operator);
+				//Window.alert(operator);
 				continue;
 			} else if (nextNum == null) {
 				nextNum = Double.parseDouble(currVal);
-				Window.alert(nextNum.toString());
+				//Window.alert(nextNum.toString());
 
 				if (operator == "+") {
 					answer = addition(firstNum, nextNum);
@@ -329,15 +337,14 @@ public class GwtExampleCalc implements EntryPoint {
 					answer = division(firstNum, nextNum);
 				} else if (operator == "^") {
 					answer = powerOf(firstNum, nextNum);
-				}
-				else if (operator == "%"){
+				} else if (operator == "%") {
 					answer = modulo(firstNum, nextNum);
 				}
 
 				result.setText(answer.toString());
 				setHistory(firstNum, operator, nextNum, answer.toString());
 
-				Window.alert("The answer is " + answer);
+				//Window.alert("The answer is " + answer);
 				firstNum = answer;
 				nextNum = null;
 				operator = null;
@@ -346,12 +353,12 @@ public class GwtExampleCalc implements EntryPoint {
 			}
 		}
 	}
-	
+
 	private void setHistory(double first, String operator, double second, String answer) {
 		int row = history.getRowCount();
 		history.setText(row, 0, first + operator + second);
 		history.setText(row, 1, answer);
-		
+
 	}
 
 	private boolean ArrayContains(String[] array, String check) {

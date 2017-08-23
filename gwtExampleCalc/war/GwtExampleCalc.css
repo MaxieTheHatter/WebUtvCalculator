@@ -4,6 +4,18 @@ button.gwt-Button{
 	width: 42px;
 }
 
+.calc{
+	margin: 0 auto;
+	border: solid black 1px;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.gwt-Label{
+	text-align: center;
+}
+
+
 /** Example rules used by the template application (remove for your app) */
 h1 {
   font-size: 2em;
